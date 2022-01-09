@@ -42,7 +42,7 @@ namespace AwesomeQueues.Rabbit
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            this.logger.LogInformation($"PushMessage, routingKey: {routingKey}");
+            this.logger.LogInformation($"RoutingKey: {routingKey}");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(this.channel);
             consumer.Received += (model, ea) =>
@@ -50,7 +50,7 @@ namespace AwesomeQueues.Rabbit
                 byte[] body = ea.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
 
-                this.logger.LogInformation("[x] Received {0}", message);
+                this.logger.LogInformation("Received {0}", message);
 
                 this.channel.BasicAck(ea.DeliveryTag, false);
             };

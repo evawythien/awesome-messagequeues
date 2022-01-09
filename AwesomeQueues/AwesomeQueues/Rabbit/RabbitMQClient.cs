@@ -26,9 +26,17 @@ namespace AwesomeQueues.Rabbit
             this.channel = connection.CreateModel();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queue"></param>
+        /// <param name="routingKey"></param>
+        /// <param name="message"></param>
         public void Publish<T>(string queue, string routingKey, T message)
         {
-            this.logger.LogInformation($"PushMessage, routingKey: {routingKey}");
+            this.logger.LogInformation($"Queue: {queue}");
+            this.logger.LogInformation($"RoutingKey: {routingKey}");
             this.channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             RabbitMessage<T> rabbitMessage = new RabbitMessage<T>("CREATE", message);

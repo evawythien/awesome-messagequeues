@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "17c2528a-e4ac-4c4c-ae0b-29ca9f2990b6",
+		"name": "AwesomeRabbitMQ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST queue",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/queue",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"queue"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

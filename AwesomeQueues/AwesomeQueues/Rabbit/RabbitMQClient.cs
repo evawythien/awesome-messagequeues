@@ -26,14 +26,15 @@ namespace AwesomeQueues.Rabbit
             this.channel = connection.CreateModel();
         }
 
-        public void Publish(string queue, string routingKey, string message)
+        public void Publish<T>(string queue, string routingKey, T message)
         {
             this.logger.LogInformation($"PushMessage, routingKey: {routingKey}");
             this.channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-            byte[] body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+            RabbitMessage<T> rabbitMessage = new RabbitMessage<T>("CREATE", message);
+            byte[] body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(rabbitMessage));
 
-            this.channel.BasicPublish(exchange: "message", routingKey: routingKey, basicProperties: null, body: body);
+            this.channel.BasicPublish(exchange: "awesome.exchange", routingKey: routingKey, basicProperties: null, body: body);
         }
     }
 }

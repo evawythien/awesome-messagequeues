@@ -1,6 +1,5 @@
 ﻿using AwesomeQueues.Rabbit;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace AwesomeQueues.Controller
 {
@@ -8,39 +7,24 @@ namespace AwesomeQueues.Controller
     [ApiController]
     public class QueueController : ControllerBase
     {
+        /// <summary>
+        /// RabbitMQ cliente.
+        /// </summary>
         private readonly IRabbitMQClient client;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="client"></param>
         public QueueController(IRabbitMQClient client)
         {
             this.client = client;
         }
 
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         [HttpPost]
         public void Post()
         {
-            this.client.Publish("queue-post", "postkey","messageeeee");
-        }
-
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            this.client.Publish("queue-post", "awesome-key", "messageeeee");
         }
     }
 }

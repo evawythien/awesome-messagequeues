@@ -9,18 +9,16 @@ namespace AwesomeQueues.Core
 {
     public static class SiteConfiguration
     {
-
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services, IConfiguration config)
         {
             services.Configure<RabbitOptions>(config.GetSection("RabbitOptions"))
-                    .AddScoped(provider => provider.GetRequiredService<IOptionsSnapshot<RabbitOptions>>().Value);
+                    .AddSingleton(provider => provider.GetRequiredService<IOptions<RabbitOptions>>().Value);
 
-
-            services.AddScoped<IRabbitMQClient, RabbitMQClient>(services =>
+            services.AddSingleton(service =>
             {
-                RabbitOptions options = services.GetRequiredService<RabbitOptions>();
+                RabbitOptions options = service.GetRequiredService<RabbitOptions>();
 
-                ConnectionFactory factory = new ConnectionFactory()
+                return new ConnectionFactory()
                 {
                     HostName = options.HostName,
                     Port = options.Port,
@@ -28,9 +26,22 @@ namespace AwesomeQueues.Core
                     Password = options.Password,
                     VirtualHost = options.VirtualHost
                 };
+            });
 
-                ILogger<RabbitMQClient> logger = services.GetService<ILogger<RabbitMQClient>>();
+            services.AddScoped<IRabbitMQClient, RabbitMQClient>(service =>
+            {
+                ConnectionFactory factory = service.GetRequiredService<ConnectionFactory>();
+
+                ILogger<RabbitMQClient> logger = service.GetService<ILogger<RabbitMQClient>>();
                 return new RabbitMQClient(factory.CreateConnection(), logger);
+            });
+
+            services.AddHostedService(service =>
+            {
+                ConnectionFactory factory = service.GetRequiredService<ConnectionFactory>();
+
+                ILogger<RabbitHostedService> logger = service.GetService<ILogger<RabbitHostedService>>();
+                return new RabbitHostedService(factory.CreateConnection(), logger);
             });
 
             return services;
